@@ -1,0 +1,22 @@
+// WiFi配置
+#define WIFI_SSID "TP-LINK_xxx"
+#define WIFI_PASSWD "xxxxxxx"
+
+// 阿里云IoT平台配置
+#define PRODUCT_KEY "xxxxxxxxxx"
+#define DEVICE_NAME "WOL-xxx"
+#define DEVICE_SECRET "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#define REGION_ID "cn-shanghai"
+
+// MQTT 配置
+#define MQTT_HOST "iot-06z00fbux1czr44.mqtt.iothub.aliyuncs.com"
+#define MQTT_PORT 1883
+#define MQTT_CLIENT_ID "xxxxxxxxxx.WOL-tool|securemode=2,signmethod=hmacsha256,timestamp=1705216529509|";
+#define MQTT_USERNAME "WOL-xxxx&xxxxxxxxxx"
+#define MQTT_PASSWORD "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+// 电脑的MAC地址
+#define MAC_ADDRESS1 "01:02:03:04:05:06"
+#define MAC_ADDRESS2 "01:02:03:04:05:06"
+#define MAC_ADDRESS3 "01:02:03:04:05:06"
+#define MAC_ADDRESS4 "01:02:03:04:05:06"
