@@ -1,3 +1,5 @@
+#include <ArduinoOTA.h>
+
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <WakeOnLan.h>
@@ -22,6 +24,37 @@ WakeOnLan WOL(UDP);
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
+// OTA
+void setupOTA() {
+  ArduinoOTA
+    .onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
+
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      Serial.println("Start updating " + type);
+    })
+    .onEnd([]() {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    });
+
+  ArduinoOTA.begin();
+}
+
 // 连接到WiFi
 void connectToWiFi() {
     WiFi.mode(WIFI_STA);
@@ -33,10 +66,10 @@ void connectToWiFi() {
     }
     Serial.println("");
     Serial.println("WiFi connected");
-    Serial.println("");
-    Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
+    setupOTA();
+    Serial.println("OTA initialized");
 }
 
 // 连接到MQTT服务器
@@ -56,18 +89,6 @@ void connectToMQTT() {
         }
     }
 }
-
-// // MQTT消息回调
-// void mqttCallback(char* topic, byte* payload, unsigned int length) {
-//     // 处理MQTT消息
-//     Serial.print("Message arrived [");
-//     Serial.print(topic);
-//     Serial.print("] ");
-//     for (int i = 0; i < length; i++) {
-//         Serial.print((char)payload[i]);
-//     }
-//     Serial.println();
-// }
 
 // MQTT消息回调
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -123,4 +144,5 @@ void loop() {
         connectToMQTT();
     }
     mqttClient.loop();
+    ArduinoOTA.handle();
 }
